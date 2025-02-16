@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ludo Game with Tetrahedron Dice</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- Updated Board Markup with Special Cells -->
+    <div class="board" id="board">
+      <!-- Row 0 -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell yellow-home"></div>   <!-- Yellow home (row0 col2) -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <!-- Row 1 -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <!-- Row 2 -->
+      <div class="cell red-home"></div>        <!-- Red home (row2 col0) -->
+      <div class="cell"></div>
+      <div class="cell center-cell"></div>     <!-- Center cell (row2 col2) -->
+      <div class="cell"></div>
+      <div class="cell green-home"></div>      <!-- Green home (row2 col4) -->
+      <!-- Row 3 -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <!-- Row 4 -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell blue-home"></div>       <!-- Blue home (row4 col2) -->
+      <div class="cell"></div>
+      <div class="cell"></div>
+      
+      <!-- Sixteen Pieces Placed at Outer Corners -->
+      <div class="piece red" id="red1" data-color="Red"></div>
+      <div class="piece red" id="red2" data-color="Red"></div>
+      <div class="piece red" id="red3" data-color="Red"></div>
+      <div class="piece red" id="red4" data-color="Red"></div>
+
+      <div class="piece blue" id="blue1" data-color="Blue"></div>
+      <div class="piece blue" id="blue2" data-color="Blue"></div>
+      <div class="piece blue" id="blue3" data-color="Blue"></div>
+      <div class="piece blue" id="blue4" data-color="Blue"></div>
+
+      <div class="piece green" id="green1" data-color="Green"></div>
+      <div class="piece green" id="green2" data-color="Green"></div>
+      <div class="piece green" id="green3" data-color="Green"></div>
+      <div class="piece green" id="green4" data-color="Green"></div>
+
+      <div class="piece yellow" id="yellow1" data-color="Yellow"></div>
+      <div class="piece yellow" id="yellow2" data-color="Yellow"></div>
+      <div class="piece yellow" id="yellow3" data-color="Yellow"></div>
+      <div class="piece yellow" id="yellow4" data-color="Yellow"></div>
+    </div>
+
+    <!-- New Dice Container Below the Board -->
+    <div id="dice-container">
+      <button id="roll-btn">Roll - Red's Turn</button>
+      <button id="result-btn" disabled>Result</button>
+      <div class="tetrahedron" id="tetrahedron">
+        <div class="face face1"></div>
+        <div class="face face2"></div>
+        <div class="face face3"></div>
+        <div class="face face4"></div>
+      </div>
+    </div>
+  </div>
+
+ <script src="script.js"></script>
+</body>
+</html>
