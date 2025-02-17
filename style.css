@@ -1,4 +1,4 @@
- /* ---------------- Board & Pieces Styles ---------------- */
+/* ---------------- Board & Pieces Styles ---------------- */
  .board {
     position: relative;
     display: grid;
@@ -163,7 +163,7 @@
     height: var(--dot-size);
     background: black;
     border-radius: 50%;
-    margin: var(--dot-margin);
+    margin: auto 10px; /* increased margin between dots */
   }
 
   /* New styles for special board cells */

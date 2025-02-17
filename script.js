@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   // NEW: Prompt user for number of players and set active colors accordingly.
   let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 10);
@@ -75,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Roll button: start dice roll if not already rolling or moving.
   rollBtn.addEventListener('click', () => {
     if (isRolling || isMoving) return;
-    if (waitingForSelection) return;
+    // Removed: if (waitingForSelection) return;
     isRolling = true;
     // Reset dice visuals.
     const targetFace = tetrahedron.querySelector('.face.face1');
@@ -90,6 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Force reflow so that the animation restarts.
     void tetrahedron.offsetWidth;
     tetrahedron.classList.add('rolling');
+  });
+
+  // Modified dice click listener: removed waitingForSelection check.
+  tetrahedron.addEventListener('click', () => {
+    if (isRolling || isMoving) return;
+    rollBtn.click();
   });
   
   /*** Board & Pieces Code ***/
