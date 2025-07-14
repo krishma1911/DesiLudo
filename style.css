@@ -1,6 +1,6 @@
 body {
   font-family: "Handjet", sans-serif;
-    background-image: url('bg.png'); /* Ensure this image exists */
+    background-image: url('assets/img/bg.png'); /* Ensure this image exists */
     background-repeat: no-repeat;
     background-size: cover;
     margin: 0;

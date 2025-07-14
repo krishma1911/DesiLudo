@@ -28,49 +28,44 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
     "Yellow": "#f1c40f"
   };
 
-  function rollCowries() {
-    cowrieContainer.innerHTML = '';
-    let upCount = 0;
-    for (let i = 0; i < 4; i++) {
-      const shell = document.createElement('img');
-      const isUp = Math.random() > 0.5;
-      if (isUp) upCount++;
-      shell.src = isUp ? 'cowrie-up.png' : 'cowrie-down.png';
-      shell.className = 'cowrie-img';
-      cowrieContainer.appendChild(shell);
-    }
-    currentDiceResult = upCount === 0 ? 8 : upCount; // Traditional rule
-    resultBtn.textContent = `Result: ${currentDiceResult}`;
-    resultBtn.disabled = false;
-    isRolling = false;
-    waitingForSelection = true;
-    rollBtn.textContent = `Select ${turnColors[currentTurn]}'s Piece`;
-  }
+  const rollSound = new Audio('assets/audio/dice.mp3');
+const moveSound = new Audio('assets/audio/step.mp3');
+const winSound = new Audio('assets/audio/winner.mp3');
+  const killSound = new Audio('assets/audio/dead.mp3');
 
- rollBtn.addEventListener('click', () => {
-  if (isRolling || isMoving) return;
+
+
+ // At the top
+const cowrieShells = document.getElementById('cowrie-shells');
+
+rollBtn.addEventListener('click', () => {
+  if (isRolling || isMoving || waitingForSelection) return; // prevent double roll
   isRolling = true;
 
-  const cowrieShells = document.getElementById('cowrie-shells');
-  cowrieShells.innerHTML = ''; // Clear previous images
+  // Play roll sound only on valid user interaction
+  if (rollSound) {
+    rollSound.currentTime = 0;
+    rollSound.play();
+  }
 
+  cowrieShells.innerHTML = ''; // Clear old cowries
   let upCount = 0;
+
   for (let i = 0; i < 4; i++) {
     const isUp = Math.random() > 0.5;
     if (isUp) upCount++;
 
     const img = document.createElement('img');
-    img.src = isUp ? 'cowrie-up.png' : 'cowrie-down.png';
+    img.src = isUp ? 'assets/img/cowrie-up.png' : 'assets/img/cowrie-down.png';
     img.alt = isUp ? 'Up' : 'Down';
-    img.style.width = '50px';
-    img.style.height = '50px';
-    img.style.transition = 'transform 0.5s ease';
-    img.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+    img.className = 'cowrie-img';
+    img.style.width = '70px'; // Adjust size as needed
+    img.style.height = '70px'; // Adjust size as needed
+    img.style.transform = `rotate(${Math.floor(Math.random() * 360)}deg)`;
     cowrieShells.appendChild(img);
   }
 
-  // 💡 Correct the result: if all down (0 up), count it as 8
-  const finalResult = upCount === 0 ? 8 : upCount;
+  const finalResult = (upCount === 0) ? 8 : upCount;
 
   setTimeout(() => {
     resultBtn.textContent = `Result: ${finalResult}`;
@@ -82,10 +77,6 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
   }, 500);
 });
 
-  cowrieContainer.addEventListener('click', () => {
-    if (isRolling || isMoving) return;
-    rollBtn.click();
-  });
   
   /*** Board & Pieces Code ***/
   const cellSize = 120;  // updated from 100
@@ -250,6 +241,9 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
         if (piece.ring === 'outer' && piece.outerSteps === 0) return;
         resetPiece(piece);
         killed = true;
+          // 🔊 Play kill sound
+      killSound.currentTime = 0; // rewind to start
+      killSound.play();
       }
     });
     return killed;
@@ -290,6 +284,7 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
   
   // Helper: Move one step for a piece; call callback after 500ms (CSS transition duration).
   function moveOneStep(piece, callback) {
+    moveSound.play();
     if (piece.ring === 'outer') {
       // If the next step would complete the outer lap, move to inner ring.
       if (piece.outerSteps + 1 === outerCells.length) {
@@ -317,6 +312,7 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
   
   // New helper: Same as moveOneStep but without killing opponents.
   function moveOneStepNoKill(piece, callback) {
+     moveSound.play();
     if (piece.ring === 'outer') {
       if (piece.outerSteps + 1 === outerCells.length) {
         piece.ring = 'inner';
@@ -369,6 +365,9 @@ let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 
         rankings.push(piece.color);
         activePlayers = activePlayers.filter(c => c !== piece.color);
         alert(`${piece.color} finished with rank #${rankings.length}`);
+        winSound.currentTime = 0;
+    winSound.play();
+
         if(activePlayers.length === 1) {
           rankings.push(activePlayers[0]);
           alert(`Game Over!
