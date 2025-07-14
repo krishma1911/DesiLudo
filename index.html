@@ -3,27 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Indian Ludo Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Indian Ludo Game</h1>
+<img src="logo.png" alt="Indian Ludo Logo" class="logo">
   <div class="game-container">
     
 
-    
+  
     <!-- Board Markup with Special Cells -->
     <div class="board" id="board">
       <!-- Row 0 -->
       <div class="cell"></div>
       <div class="cell"></div>
       <div class="cell yellow-home"></div>   <!-- Yellow home (row0 col2) -->
-      <div class="cell"></div>
+      <div class="cell yellow-entry">↓</div>
       <div class="cell"></div>
       <!-- Row 1 -->
+      <div class="cell red-entry">→</div>
+      <div class="cell safe-cell">✕</div>
       <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
+      <div class="cell safe-cell">✕</div>
       <div class="cell"></div>
       <!-- Row 2 -->
       <div class="cell red-home"></div>        <!-- Red home (row2 col0) -->
@@ -33,13 +36,13 @@
       <div class="cell green-home"></div>      <!-- Green home (row2 col4) -->
       <!-- Row 3 -->
       <div class="cell"></div>
+      <div class="cell safe-cell">✕</div>
       <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
+      <div class="cell safe-cell">✕</div>
+      <div class="cell green-entry">←</div>
       <!-- Row 4 -->
       <div class="cell"></div>
-      <div class="cell"></div>
+      <div class="cell blue-entry">↑</div>
       <div class="cell blue-home"></div>       <!-- Blue home (row4 col2) -->
       <div class="cell"></div>
       <div class="cell"></div>
@@ -67,16 +70,13 @@
     </div>
 
     <!-- New Dice  -->
-    <div id="dice-container">
-      <button id="roll-btn">Roll - Red's Turn</button>
-      <button id="result-btn" disabled>Result</button>
-      <div class="tetrahedron" id="tetrahedron">
-        <div class="face face1"></div>
-        <div class="face face2"></div>
-        <div class="face face3"></div>
-        <div class="face face4"></div>
-      </div>
-    </div>
+    <!-- Cowrie Dice Container -->
+<div id="cowrie-container" style="margin: 20px 0; text-align: center;">
+  <div id="cowrie-shells" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;"></div>
+  <button id="roll-btn">Roll Cowries</button>
+  <button id="result-btn" disabled>Result</button>
+</div>
+
   </div>
 
  <script src="script.js"></script>

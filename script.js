@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // NEW: Prompt user for number of players and set active colors accordingly.
-  let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 10);
+let numPlayers = parseInt(prompt("Enter number of players (2, 3, or 4):", "4"), 10);
   let availableColors;
   if(numPlayers === 2) {
     availableColors = ['Red', 'Green'];
@@ -12,87 +12,77 @@ document.addEventListener('DOMContentLoaded', () => {
   let turnColors = [...availableColors];
   let activePlayers = [...availableColors];
   const rankings = [];
-
-  /*** Global State for Dice and Turn Order ***/
-  const rollBtn = document.getElementById('roll-btn');
+ const rollBtn = document.getElementById('roll-btn');
   const resultBtn = document.getElementById('result-btn');
-  const tetrahedron = document.getElementById('tetrahedron');
-  let currentDiceResult = null; // holds dice result (1–4)
+  const cowrieContainer = document.getElementById('cowrie-container');
+  let currentDiceResult = null;
   let isRolling = false;
   let isMoving = false;
   let waitingForSelection = false;
-  
-  let currentTurn = 0; // 0: Red, 1: Blue, 2: Green, 3: Yellow
-  
-  // Mapping for front face color based on dice result.
-  const surfaceColors = {
-    1: '#00bcd4',  // Cyan
-    2: '#e91e63',  // Magenta
-    3: '#4caf50',  // Green
-    4: '#e74c3c'   // Red
-  };
-  
-  // New mapping for player colors
+  let currentTurn = 0;
+
   const playerColors = {
     "Red": "#e74c3c",
     "Blue": "#3498db",
     "Green": "#4caf50",
     "Yellow": "#f1c40f"
   };
-  
-  // Function to generate dots on the front face based on the dice result.
-  const generateDots = (dotCount) => {
-    const targetFace = tetrahedron.querySelector('.face.face1');
-    const existingDots = targetFace.querySelector('.dots');
-    if (existingDots) existingDots.remove();
-    const dotsContainer = document.createElement('div');
-    dotsContainer.className = 'dots';
-    for (let i = 0; i < dotCount; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'dot';
-      dotsContainer.appendChild(dot);
+
+  function rollCowries() {
+    cowrieContainer.innerHTML = '';
+    let upCount = 0;
+    for (let i = 0; i < 4; i++) {
+      const shell = document.createElement('img');
+      const isUp = Math.random() > 0.5;
+      if (isUp) upCount++;
+      shell.src = isUp ? 'cowrie-up.png' : 'cowrie-down.png';
+      shell.className = 'cowrie-img';
+      cowrieContainer.appendChild(shell);
     }
-    targetFace.appendChild(dotsContainer);
-  };
-  
-  // When tetrahedron rolling animation ends, generate a dice result.
-  tetrahedron.addEventListener('animationend', () => {
-    tetrahedron.classList.remove('rolling');
-    tetrahedron.classList.add('show-only-front');
-    currentDiceResult = Math.floor(Math.random() * 4) + 1; // 1 to 4
-    generateDots(currentDiceResult);
-    const face1 = tetrahedron.querySelector('.face.face1');
-    // Set face color to the active player's color instead of dice number mapping.
-    face1.style.background = playerColors[turnColors[currentTurn]];
+    currentDiceResult = upCount === 0 ? 8 : upCount; // Traditional rule
     resultBtn.textContent = `Result: ${currentDiceResult}`;
     resultBtn.disabled = false;
     isRolling = false;
     waitingForSelection = true;
     rollBtn.textContent = `Select ${turnColors[currentTurn]}'s Piece`;
-  });
-  
-  // Roll button: start dice roll if not already rolling or moving.
-  rollBtn.addEventListener('click', () => {
-    if (isRolling || isMoving) return;
-    // Removed: if (waitingForSelection) return;
-    isRolling = true;
-    // Reset dice visuals.
-    const targetFace = tetrahedron.querySelector('.face.face1');
-    const existingDots = targetFace.querySelector('.dots');
-    if (existingDots) existingDots.remove();
-    // Set dice face color to current player's color.
-    targetFace.style.background = playerColors[turnColors[currentTurn]];
-    tetrahedron.classList.remove('show-only-front');
-    tetrahedron.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    resultBtn.textContent = 'Result';
-    resultBtn.disabled = true;
-    // Force reflow so that the animation restarts.
-    void tetrahedron.offsetWidth;
-    tetrahedron.classList.add('rolling');
-  });
+  }
 
-  // Modified dice click listener: removed waitingForSelection check.
-  tetrahedron.addEventListener('click', () => {
+ rollBtn.addEventListener('click', () => {
+  if (isRolling || isMoving) return;
+  isRolling = true;
+
+  const cowrieShells = document.getElementById('cowrie-shells');
+  cowrieShells.innerHTML = ''; // Clear previous images
+
+  let upCount = 0;
+  for (let i = 0; i < 4; i++) {
+    const isUp = Math.random() > 0.5;
+    if (isUp) upCount++;
+
+    const img = document.createElement('img');
+    img.src = isUp ? 'cowrie-up.png' : 'cowrie-down.png';
+    img.alt = isUp ? 'Up' : 'Down';
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.transition = 'transform 0.5s ease';
+    img.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+    cowrieShells.appendChild(img);
+  }
+
+  // 💡 Correct the result: if all down (0 up), count it as 8
+  const finalResult = upCount === 0 ? 8 : upCount;
+
+  setTimeout(() => {
+    resultBtn.textContent = `Result: ${finalResult}`;
+    resultBtn.disabled = false;
+    currentDiceResult = finalResult;
+    isRolling = false;
+    waitingForSelection = true;
+    rollBtn.textContent = `Select ${turnColors[currentTurn]}'s Piece`;
+  }, 500);
+});
+
+  cowrieContainer.addEventListener('click', () => {
     if (isRolling || isMoving) return;
     rollBtn.click();
   });
@@ -144,6 +134,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Center cell.
   const centerCell = { row: 2, col: 2 };
   
+
+  // Safe Cells
+  const safeCells = [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 3, col: 1 },
+    { row: 3, col: 3 }
+  ];
+
+  // Draw crosses for safe cells
+  safeCells.forEach(cell => {
+    const cross = document.createElement('div');
+    cross.className = 'safe-cross';
+    cross.style.left = `${cell.col * (cellSize + gap) + cellSize / 2 - 10}px`;
+    cross.style.top = `${cell.row * (cellSize + gap) + cellSize / 2 - 10}px`;
+    document.getElementById('board').appendChild(cross);
+  });
+
   /*  
     Each piece is defined with:
      - startIndex: Its starting position in outerCells.
@@ -228,13 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
-  // New functions: Kill opponent pieces and reset them to their initial positions.
-  function killOpponents(cell, movingPiece) {
-    if(cell.row === centerCell.row && cell.col === centerCell.col) return false;
-    if (homeCells.some(home => home.row === cell.row && home.col === cell.col)) {
-      return false;
-    }
+ function killOpponents(cell, movingPiece) {
+    if (safeCells.some(s => s.row === cell.row && s.col === cell.col)) return false;
+    if (cell.row === centerCell.row && cell.col === centerCell.col) return false;
+    if (homeCells.some(home => home.row === cell.row && home.col === cell.col)) return false;
     let killed = false;
     pieces.forEach(piece => {
       if (piece === movingPiece) return;
@@ -242,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
           piece.currentCell.row === cell.row &&
           piece.currentCell.col === cell.col &&
           piece.color !== movingPiece.color) {
-        // Skip killing if the opponent is still at its home starting cell.
         if (piece.ring === 'outer' && piece.outerSteps === 0) return;
         resetPiece(piece);
         killed = true;
@@ -376,13 +380,14 @@ ${rankings[2] ? "3rd: " + rankings[2] : ""}`);
       }
     }
   }
-  
-  // Update button text and colors to reflect the active player.
-  function updateRollBtnText() {
-    rollBtn.textContent = `Roll - ${turnColors[currentTurn]}'s Turn`;
-    rollBtn.style.background = playerColors[turnColors[currentTurn]];
-    resultBtn.style.background = playerColors[turnColors[currentTurn]];
-  }
+  // After defining `turnColors` and `currentTurn`:
+function updateRollBtnText() {
+  rollBtn.textContent = `Roll Cowries - ${turnColors[currentTurn]}'s Turn`;
+  rollBtn.style.background = playerColors[turnColors[currentTurn]];
+  resultBtn.style.background = playerColors[turnColors[currentTurn]];
+  resultBtn.textContent = 'Result';
+  resultBtn.disabled = true;
+}
   
   // Initialize roll button text (and color)
   updateRollBtnText();
