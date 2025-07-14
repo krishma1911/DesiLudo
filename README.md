@@ -69,7 +69,8 @@ Be the first to move all **four pieces** from your starting position to the **ce
 
 ## 📸 Screenshots
 
-![Game Board](screenshot.png)
+![Game Board](Board.png)
+![Win State](Win.png)
 
 ---
 
